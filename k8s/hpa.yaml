@@ -61,13 +61,13 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 60
+        averageUtilization: 70
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 75
+        averageUtilization: 80
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300

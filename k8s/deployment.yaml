@@ -141,11 +141,11 @@ spec:
           mountPath: /backend/temp_files
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
             memory: "6Gi"
             cpu: "4000m"
+          limits:
+            memory: "16Gi"
+            cpu: "12000m"
       volumes:
       - name: backend-files
         persistentVolumeClaim:
