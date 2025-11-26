@@ -87,7 +87,7 @@ def get_dependencies_licenses(file_path):
         if lang=="Python":
             require_dist = list(dep['Python'])
             direct_dep = get_direct_dep(require_dist)
-            mongo_uri = "mongodb://localhost:27017/"
+            mongo_uri = f"mongodb://{MONGO_HOST}:27017/"
             dr = Z3DependencyResolver(mongo_uri, file_path.split("/")[-1])
             dep_tree = dr.resolve(require_dist)
             if dep_tree:

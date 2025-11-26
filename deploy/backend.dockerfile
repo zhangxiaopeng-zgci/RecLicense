@@ -7,7 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-FROM --platform=linux/amd64 python:3.8-slim-buster
+FROM --platform=linux/amd64 python:3.8-slim-bullseye
 
 # Python settings: Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1
@@ -28,6 +28,7 @@ RUN apt-get update \
        libgcrypt20 \
        libpopt0 \
        libzstd1 \
+       curl \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -61,6 +62,9 @@ RUN pip install -r /backend/requirements.txt
 COPY ./backend /backend
 
 WORKDIR /backend
+
+# Create logging directory
+RUN mkdir -p /backend/app/logging && touch /backend/app/logging/backend.log
 
 VOLUME [ "/backend/temp_files" ]
 
