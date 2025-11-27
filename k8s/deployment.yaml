@@ -12,10 +12,45 @@ metadata:
   namespace: reclicense
 type: Opaque
 stringData:
-  GITHUB_TOKEN: "YOUR_GITHUB_TOKEN"
+  # Multi-platform Git tokens
+  GITHUB_TOKEN: "your_github_token_here"
+  GITEE_TOKEN: ""
+  GITLAB_TOKEN: ""
+  GITEE_PRIVATE_TOKEN: "your_gitee_private_token_here"
+  # MongoDB configuration
   MONGO_HOST: "mongodb"
   MONGO_PORT: "27017"
+  # Frontend configuration
   REACT_APP_BASE_URL: "http://localhost:5000"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-platforms-config
+  namespace: reclicense
+data:
+  git_platforms.yaml: |
+    platforms:
+      gitee-private:
+        name: "Gitee私有部署"
+        api_url: "https://z.gitee.cn/api/v5"
+        repo_api: "https://z.gitee.cn/api/v5/repos/{owner}/{repo}"
+        zipball_url: "https://z.gitee.cn/{owner}/{repo}/repository/archive/{branch}.zip"
+        auth_type: "param"
+        token_param: "access_token"
+        download_auth_type: "header"
+        download_token_header: "Authorization"
+        download_token_prefix: "token "
+        headers:
+          Accept: "application/json"
+        env_token: "GITEE_PRIVATE_TOKEN"
+        enabled: true
+        public: false
+        url_prefix: "https://z.gitee.cn/"
+        fetch_default_branch: true
+        default_branch_field: "default_branch"
+        branch_fallback: ["master", "main", "dev", "develop"]
 
 ---
 apiVersion: v1
@@ -123,7 +158,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: reclicense-backend:v1.5
+        image: reclicense-backend:v1.8
         imagePullPolicy: Never
         ports:
         - containerPort: 5000
@@ -134,11 +169,29 @@ spec:
             secretKeyRef:
               name: reclicense-config
               key: GITHUB_TOKEN
+        - name: GITEE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: reclicense-config
+              key: GITEE_TOKEN
+        - name: GITLAB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: reclicense-config
+              key: GITLAB_TOKEN
+        - name: GITEE_PRIVATE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: reclicense-config
+              key: GITEE_PRIVATE_TOKEN
         - name: RECLIC_MONGO_PORT
           value: "mongodb:27017"
         volumeMounts:
         - name: backend-files
           mountPath: /backend/temp_files
+        - name: backend-config
+          mountPath: /backend/config
+          readOnly: true
         resources:
           requests:
             memory: "6Gi"
@@ -150,6 +203,9 @@ spec:
       - name: backend-files
         persistentVolumeClaim:
           claimName: backend-files-pvc
+      - name: backend-config
+        configMap:
+          name: git-platforms-config
 
 ---
 apiVersion: v1
@@ -191,7 +247,7 @@ spec:
         node-role.kubernetes.io/worker: ""
       containers:
       - name: frontend
-        image: reclicense-frontend:v1.1
+        image: reclicense-frontend:v1.7
         imagePullPolicy: Never
         ports:
         - containerPort: 80
@@ -204,6 +260,8 @@ spec:
             secretKeyRef:
               name: reclicense-config
               key: REACT_APP_BASE_URL
+        - name: BACKEND_HOST
+          value: "reclicense-backend"
         resources:
           requests:
             memory: "256Mi"

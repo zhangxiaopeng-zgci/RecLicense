@@ -1,0 +1,2536 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    generateName: mongodb-6698596c7-
+    generation: 1
+    labels:
+      app: mongodb
+      pod-template-hash: 6698596c7
+    name: mongodb-6698596c7-sk869
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: mongodb-6698596c7
+      uid: da23d91c-6095-4a8e-ba37-a414d9d4c734
+    resourceVersion: "719944"
+    uid: 62ecae27-688b-48fa-85b1-a53092c0ec72
+  spec:
+    containers:
+    - args:
+      - mongod
+      - --bind_ip=0.0.0.0
+      image: mongo:6.0
+      imagePullPolicy: IfNotPresent
+      name: mongodb
+      ports:
+      - containerPort: 27017
+        name: mongodb
+        protocol: TCP
+      resources:
+        limits:
+          cpu: "4"
+          memory: 10Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /data/db
+        name: mongodb-data
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-xn4kh
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: k8s-node03
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: mongodb-data
+      persistentVolumeClaim:
+        claimName: mongodb-pvc
+    - name: kube-api-access-xn4kh
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-24T09:31:55Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-24T09:31:31Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-24T09:31:55Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-24T09:31:55Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-24T09:31:31Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: "1"
+        memory: 2Gi
+      containerID: containerd://0ff64bbf9c5d08186dd2f6444dae55c8993eebc8728441b32a2ef4c725b78b24
+      image: docker.io/library/mongo:6.0
+      imageID: docker.io/library/mongo@sha256:0a83b2f824b29c94c5284a49b018db2e3166d9879d1edda5cce545d899ef2bbb
+      lastState: {}
+      name: mongodb
+      ready: true
+      resources:
+        limits:
+          cpu: "4"
+          memory: 10Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-11-24T09:31:55Z"
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          uid: 0
+      volumeMounts:
+      - mountPath: /data/db
+        name: mongodb-data
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-xn4kh
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.100.6.213
+    hostIPs:
+    - ip: 10.100.6.213
+    observedGeneration: 1
+    phase: Running
+    podIP: 172.25.214.207
+    podIPs:
+    - ip: 172.25.214.207
+    qosClass: Burstable
+    startTime: "2025-11-24T09:31:31Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/restartedAt: "2025-11-26T10:05:25+08:00"
+    creationTimestamp: "2025-11-26T02:05:25Z"
+    generateName: reclicense-backend-6c56bf6bb6-
+    generation: 1
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 6c56bf6bb6
+    name: reclicense-backend-6c56bf6bb6-28djx
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: reclicense-backend-6c56bf6bb6
+      uid: d73ab135-44a8-4c55-8637-5bda956b6cf3
+    resourceVersion: "993841"
+    uid: 326b9938-07d4-451c-be47-d490e21ce9ea
+  spec:
+    containers:
+    - env:
+      - name: GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            key: GITHUB_TOKEN
+            name: reclicense-config
+      - name: RECLIC_MONGO_PORT
+        value: mongodb:27017
+      image: reclicense-backend:v1.7
+      imagePullPolicy: Never
+      name: backend
+      ports:
+      - containerPort: 5000
+        name: http
+        protocol: TCP
+      resources:
+        limits:
+          cpu: "12"
+          memory: 16Gi
+        requests:
+          cpu: "4"
+          memory: 6Gi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /backend/temp_files
+        name: backend-files
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-rlbrd
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: k8s-node04
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: backend-files
+      persistentVolumeClaim:
+        claimName: backend-files-pvc
+    - name: kube-api-access-rlbrd
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T02:05:26Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T02:05:25Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T02:05:26Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T02:05:26Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T02:05:25Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: "4"
+        memory: 6Gi
+      containerID: containerd://d19f5d5935ee300593f0c9c497c2716a948a62ee9c7362af7fcdddf63289a66a
+      image: docker.io/library/reclicense-backend:v1.7
+      imageID: sha256:d4de3249045e939ad60bbd88d4fe4e597e2903d96ad97efefb6cfdc01b6ed035
+      lastState: {}
+      name: backend
+      ready: true
+      resources:
+        limits:
+          cpu: "12"
+          memory: 16Gi
+        requests:
+          cpu: "4"
+          memory: 6Gi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-11-26T02:05:26Z"
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          uid: 0
+      volumeMounts:
+      - mountPath: /backend/temp_files
+        name: backend-files
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-rlbrd
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.100.6.214
+    hostIPs:
+    - ip: 10.100.6.214
+    observedGeneration: 1
+    phase: Running
+    podIP: 172.29.115.180
+    podIPs:
+    - ip: 172.29.115.180
+    qosClass: Burstable
+    startTime: "2025-11-26T02:05:25Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/restartedAt: "2025-11-25T17:11:24+08:00"
+    creationTimestamp: "2025-11-25T10:25:05Z"
+    generateName: reclicense-frontend-74cbf746f4-
+    generation: 1
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 74cbf746f4
+    name: reclicense-frontend-74cbf746f4-rnqrm
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: reclicense-frontend-74cbf746f4
+      uid: ce7caf83-ba5f-450e-a7c5-5e4338a72edb
+    resourceVersion: "887625"
+    uid: de965249-78b0-493b-896f-77ec18432c0d
+  spec:
+    containers:
+    - env:
+      - name: REACT_APP_BASE_URL
+        valueFrom:
+          secretKeyRef:
+            key: REACT_APP_BASE_URL
+            name: reclicense-config
+      image: reclicense-frontend:v1.1
+      imagePullPolicy: Never
+      name: frontend
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-kqc48
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: k8s-node02
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-kqc48
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-25T10:25:07Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-25T10:25:05Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-25T10:25:07Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-25T10:25:07Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-25T10:25:05Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 200m
+        memory: 256Mi
+      containerID: containerd://c609ae1ae3db54c54fd08fcb95eab442ce23e50b7dc65cceb8c63dc82dd1b706
+      image: docker.io/library/reclicense-frontend:v1.1
+      imageID: sha256:c9ad36cc8e3c78aa6ee2ebe9beb74c52262ec306678ae4c4b559d9a434e7649e
+      lastState: {}
+      name: frontend
+      ready: true
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-11-25T10:25:06Z"
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 6
+          - 10
+          - 11
+          - 20
+          - 26
+          - 27
+          uid: 0
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-kqc48
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.100.6.212
+    hostIPs:
+    - ip: 10.100.6.212
+    observedGeneration: 1
+    phase: Running
+    podIP: 172.27.14.228
+    podIPs:
+    - ip: 172.27.14.228
+    qosClass: Burstable
+    startTime: "2025-11-25T10:25:05Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/restartedAt: "2025-11-25T17:11:24+08:00"
+    creationTimestamp: "2025-11-26T01:53:13Z"
+    generateName: reclicense-frontend-74cbf746f4-
+    generation: 1
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 74cbf746f4
+    name: reclicense-frontend-74cbf746f4-zchkv
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: reclicense-frontend-74cbf746f4
+      uid: ce7caf83-ba5f-450e-a7c5-5e4338a72edb
+    resourceVersion: "992319"
+    uid: 5eb59eb4-3a74-4553-910b-3d2603478eb9
+  spec:
+    containers:
+    - env:
+      - name: REACT_APP_BASE_URL
+        valueFrom:
+          secretKeyRef:
+            key: REACT_APP_BASE_URL
+            name: reclicense-config
+      image: reclicense-frontend:v1.1
+      imagePullPolicy: Never
+      name: frontend
+      ports:
+      - containerPort: 80
+        name: http
+        protocol: TCP
+      - containerPort: 443
+        name: https
+        protocol: TCP
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-tlwfj
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: k8s-node01
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-tlwfj
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T01:53:14Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T01:53:13Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T01:53:14Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T01:53:14Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-11-26T01:53:13Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 200m
+        memory: 256Mi
+      containerID: containerd://bab11016a0ba471143b129d6024524841a36af427024b3e5adc9f14ff49eab77
+      image: docker.io/library/reclicense-frontend:v1.1
+      imageID: sha256:c9ad36cc8e3c78aa6ee2ebe9beb74c52262ec306678ae4c4b559d9a434e7649e
+      lastState: {}
+      name: frontend
+      ready: true
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-11-26T01:53:14Z"
+      user:
+        linux:
+          gid: 0
+          supplementalGroups:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 6
+          - 10
+          - 11
+          - 20
+          - 26
+          - 27
+          uid: 0
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-tlwfj
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 10.100.6.211
+    hostIPs:
+    - ip: 10.100.6.211
+    observedGeneration: 1
+    phase: Running
+    podIP: 172.17.125.35
+    podIPs:
+    - ip: 172.17.125.35
+    qosClass: Burstable
+    startTime: "2025-11-26T01:53:13Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"mongodb"},"name":"mongodb","namespace":"reclicense"},"spec":{"ports":[{"name":"mongodb","port":27017,"protocol":"TCP","targetPort":27017}],"selector":{"app":"mongodb"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    labels:
+      app: mongodb
+    name: mongodb
+    namespace: reclicense
+    resourceVersion: "719116"
+    uid: 50865803-723b-48fa-94ef-2d0fbfd5263a
+  spec:
+    clusterIP: 192.168.166.85
+    clusterIPs:
+    - 192.168.166.85
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: mongodb
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      app: mongodb
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"reclicense-backend"},"name":"reclicense-backend","namespace":"reclicense"},"spec":{"ports":[{"name":"http","port":5000,"protocol":"TCP","targetPort":5000}],"selector":{"app":"reclicense-backend"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    labels:
+      app: reclicense-backend
+    name: reclicense-backend
+    namespace: reclicense
+    resourceVersion: "719135"
+    uid: 6437ac24-4720-44ab-97fd-3ec794341ad1
+  spec:
+    clusterIP: 192.168.158.176
+    clusterIPs:
+    - 192.168.158.176
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 5000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      app: reclicense-backend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"reclicense-frontend"},"name":"reclicense-frontend","namespace":"reclicense"},"spec":{"ports":[{"name":"http","nodePort":30600,"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"reclicense-frontend"},"type":"NodePort"}}
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    labels:
+      app: reclicense-frontend
+    name: reclicense-frontend
+    namespace: reclicense
+    resourceVersion: "719155"
+    uid: bbc314ef-1533-4182-93e9-f73d78f3cb53
+  spec:
+    clusterIP: 192.168.222.28
+    clusterIPs:
+    - 192.168.222.28
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 30600
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: reclicense-frontend
+    sessionAffinity: None
+    type: NodePort
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"mongodb"},"name":"mongodb","namespace":"reclicense"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"mongodb"}},"template":{"metadata":{"labels":{"app":"mongodb"}},"spec":{"containers":[{"args":["mongod","--bind_ip=0.0.0.0"],"image":"mongo:6.0","name":"mongodb","ports":[{"containerPort":27017,"name":"mongodb"}],"resources":{"limits":{"cpu":"4000m","memory":"10Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}},"volumeMounts":[{"mountPath":"/data/db","name":"mongodb-data"}]}],"volumes":[{"name":"mongodb-data","persistentVolumeClaim":{"claimName":"mongodb-pvc"}}]}}}}
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    generation: 1
+    labels:
+      app: mongodb
+    name: mongodb
+    namespace: reclicense
+    resourceVersion: "719948"
+    uid: db6ee8c1-9584-46d4-b262-f957b2729c48
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: mongodb
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: mongodb
+      spec:
+        containers:
+        - args:
+          - mongod
+          - --bind_ip=0.0.0.0
+          image: mongo:6.0
+          imagePullPolicy: IfNotPresent
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            name: mongodb
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "4"
+              memory: 10Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data/db
+            name: mongodb-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-11-24T09:31:55Z"
+      lastUpdateTime: "2025-11-24T09:31:55Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-11-24T09:26:34Z"
+      lastUpdateTime: "2025-11-24T09:31:55Z"
+      message: ReplicaSet "mongodb-6698596c7" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "16"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"reclicense-backend"},"name":"reclicense-backend","namespace":"reclicense"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"reclicense-backend"}},"template":{"metadata":{"labels":{"app":"reclicense-backend"}},"spec":{"containers":[{"env":[{"name":"GITHUB_TOKEN","valueFrom":{"secretKeyRef":{"key":"GITHUB_TOKEN","name":"reclicense-config"}}},{"name":"RECLIC_MONGO_PORT","value":"mongodb:27017"}],"image":"reclicense-backend:v1.7","imagePullPolicy":"Never","name":"backend","ports":[{"containerPort":5000,"name":"http"}],"resources":{"limits":{"cpu":"12000m","memory":"16Gi"},"requests":{"cpu":"4000m","memory":"6Gi"}},"volumeMounts":[{"mountPath":"/backend/temp_files","name":"backend-files"}]}],"volumes":[{"name":"backend-files","persistentVolumeClaim":{"claimName":"backend-files-pvc"}}]}}}}
+    creationTimestamp: "2025-11-25T04:53:14Z"
+    generation: 33
+    labels:
+      app: reclicense-backend
+    name: reclicense-backend
+    namespace: reclicense
+    resourceVersion: "995185"
+    uid: 14314741-c269-4da9-abcc-3a9456467bcd
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: reclicense-backend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-26T10:05:25+08:00"
+        labels:
+          app: reclicense-backend
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.7
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-11-25T08:02:02Z"
+      lastUpdateTime: "2025-11-26T02:05:26Z"
+      message: ReplicaSet "reclicense-backend-6c56bf6bb6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-11-26T02:15:17Z"
+      lastUpdateTime: "2025-11-26T02:15:17Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 33
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "6"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"reclicense-frontend"},"name":"reclicense-frontend","namespace":"reclicense"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"reclicense-frontend"}},"template":{"metadata":{"labels":{"app":"reclicense-frontend"}},"spec":{"containers":[{"env":[{"name":"REACT_APP_BASE_URL","valueFrom":{"secretKeyRef":{"key":"REACT_APP_BASE_URL","name":"reclicense-config"}}}],"image":"reclicense-frontend:v1.1","imagePullPolicy":"Never","name":"frontend","ports":[{"containerPort":80,"name":"http"},{"containerPort":443,"name":"https"}],"resources":{"limits":{"cpu":"1000m","memory":"2Gi"},"requests":{"cpu":"200m","memory":"256Mi"}}}],"nodeSelector":{"node-role.kubernetes.io/worker":""}}}}}
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    generation: 19
+    labels:
+      app: reclicense-frontend
+    name: reclicense-frontend
+    namespace: reclicense
+    resourceVersion: "992323"
+    uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T17:11:24+08:00"
+        labels:
+          app: reclicense-frontend
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.1
+          imagePullPolicy: Never
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-11-25T08:22:56Z"
+      lastUpdateTime: "2025-11-25T09:13:15Z"
+      message: ReplicaSet "reclicense-frontend-74cbf746f4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-11-26T01:53:14Z"
+      lastUpdateTime: "2025-11-26T01:53:14Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 19
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    generation: 1
+    labels:
+      app: mongodb
+      pod-template-hash: 6698596c7
+    name: mongodb-6698596c7
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: mongodb
+      uid: db6ee8c1-9584-46d4-b262-f957b2729c48
+    resourceVersion: "719947"
+    uid: da23d91c-6095-4a8e-ba37-a414d9d4c734
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: mongodb
+        pod-template-hash: 6698596c7
+    template:
+      metadata:
+        labels:
+          app: mongodb
+          pod-template-hash: 6698596c7
+      spec:
+        containers:
+        - args:
+          - mongod
+          - --bind_ip=0.0.0.0
+          image: mongo:6.0
+          imagePullPolicy: IfNotPresent
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            name: mongodb
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "4"
+              memory: 10Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data/db
+            name: mongodb-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "11"
+    creationTimestamp: "2025-11-25T10:24:53Z"
+    generation: 2
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 566f5464d9
+    name: reclicense-backend-566f5464d9
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "887646"
+    uid: 1c09fcdd-c2e0-4135-9b7a-83ee066430f2
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 566f5464d9
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T17:39:05+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 566f5464d9
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 2
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "7"
+    creationTimestamp: "2025-11-25T08:02:02Z"
+    generation: 3
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 57c9d94c6f
+    name: reclicense-backend-57c9d94c6f
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "871265"
+    uid: f0a1c75f-718b-4cd6-b698-b243b58187f4
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 57c9d94c6f
+    template:
+      metadata:
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 57c9d94c6f
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "4"
+              memory: 6Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "8"
+    creationTimestamp: "2025-11-25T08:08:31Z"
+    generation: 3
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 5bd97fd9b4
+    name: reclicense-backend-5bd97fd9b4
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "882016"
+    uid: 5aafeace-3b0f-4b0c-bc8e-4dceb2333202
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 5bd97fd9b4
+    template:
+      metadata:
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 5bd97fd9b4
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "4"
+              memory: 6Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "15"
+    creationTimestamp: "2025-11-26T01:53:06Z"
+    generation: 6
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 64b9c7cdc
+    name: reclicense-backend-64b9c7cdc
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "993855"
+    uid: 450d8a32-0161-4f26-98a3-0890cb9673af
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 64b9c7cdc
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-26T09:52:19+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 64b9c7cdc
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.7
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 6
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "6"
+    creationTimestamp: "2025-11-25T07:36:28Z"
+    generation: 3
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 65df66f986
+    name: reclicense-backend-65df66f986
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "871222"
+    uid: 7c3b4dae-16b5-4ac2-9544-267e9f33d0cb
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 65df66f986
+    template:
+      metadata:
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 65df66f986
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.4
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "4"
+              memory: 6Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "10"
+    creationTimestamp: "2025-11-25T09:39:05Z"
+    generation: 5
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 668ff94496
+    name: reclicense-backend-668ff94496
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "887721"
+    uid: 1357b555-fc40-4a3f-810c-fb1b3ca70f71
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 668ff94496
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T17:39:05+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 668ff94496
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "8"
+              memory: 12Gi
+            requests:
+              cpu: "2"
+              memory: 4Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 5
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "16"
+    creationTimestamp: "2025-11-26T02:05:25Z"
+    generation: 5
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 6c56bf6bb6
+    name: reclicense-backend-6c56bf6bb6
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "995184"
+    uid: d73ab135-44a8-4c55-8637-5bda956b6cf3
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 6c56bf6bb6
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-26T10:05:25+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 6c56bf6bb6
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.7
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 5
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "9"
+    creationTimestamp: "2025-11-25T09:37:29Z"
+    generation: 2
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 74d7947df7
+    name: reclicense-backend-74d7947df7
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "882263"
+    uid: 5508ac3d-cb90-474a-8b93-100700a6ba45
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 74d7947df7
+    template:
+      metadata:
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 74d7947df7
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "8"
+              memory: 12Gi
+            requests:
+              cpu: "2"
+              memory: 4Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 2
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "13"
+    creationTimestamp: "2025-11-26T01:47:32Z"
+    generation: 2
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 7b9dd6f4c7
+    name: reclicense-backend-7b9dd6f4c7
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "992130"
+    uid: 1860fe7c-149a-4cbd-98f4-1d2390a80f20
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 7b9dd6f4c7
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T18:25:08+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 7b9dd6f4c7
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.6
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 2
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "14"
+    creationTimestamp: "2025-11-26T01:52:19Z"
+    generation: 2
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 7dcbd474f6
+    name: reclicense-backend-7dcbd474f6
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "992281"
+    uid: 0b237422-89c4-4d32-82b8-241e4e212032
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 7dcbd474f6
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-26T09:52:19+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 7dcbd474f6
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.6
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 2
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "12"
+    creationTimestamp: "2025-11-25T10:25:08Z"
+    generation: 10
+    labels:
+      app: reclicense-backend
+      pod-template-hash: 7fbf74d796
+    name: reclicense-backend-7fbf74d796
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-backend
+      uid: 14314741-c269-4da9-abcc-3a9456467bcd
+    resourceVersion: "991472"
+    uid: df9f1d68-08a0-4ada-9337-87102e8e80a7
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-backend
+        pod-template-hash: 7fbf74d796
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T18:25:08+08:00"
+        labels:
+          app: reclicense-backend
+          pod-template-hash: 7fbf74d796
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: GITHUB_TOKEN
+                name: reclicense-config
+          - name: RECLIC_MONGO_PORT
+            value: mongodb:27017
+          image: reclicense-backend:v1.5
+          imagePullPolicy: Never
+          name: backend
+          ports:
+          - containerPort: 5000
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "12"
+              memory: 16Gi
+            requests:
+              cpu: "4"
+              memory: 6Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /backend/temp_files
+            name: backend-files
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: backend-files
+          persistentVolumeClaim:
+            claimName: backend-files-pvc
+  status:
+    observedGeneration: 10
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-11-24T09:26:34Z"
+    generation: 2
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 5dbdb89f6b
+    name: reclicense-frontend-5dbdb89f6b
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-frontend
+      uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+    resourceVersion: "873153"
+    uid: 06f0fb28-d6a3-437c-8727-d5f8f25bfad5
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+        pod-template-hash: 5dbdb89f6b
+    template:
+      metadata:
+        labels:
+          app: reclicense-frontend
+          pod-template-hash: 5dbdb89f6b
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.0
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 2
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "3"
+    creationTimestamp: "2025-11-25T08:24:14Z"
+    generation: 4
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 5fb9df57fc
+    name: reclicense-frontend-5fb9df57fc
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-frontend
+      uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+    resourceVersion: "879007"
+    uid: a7ae2494-0426-4ceb-92a5-af1939f682ca
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+        pod-template-hash: 5fb9df57fc
+    template:
+      metadata:
+        labels:
+          app: reclicense-frontend
+          pod-template-hash: 5fb9df57fc
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.1
+          imagePullPolicy: Never
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/hostname: k8s-node04
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 4
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "5"
+    creationTimestamp: "2025-11-25T09:11:24Z"
+    generation: 3
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 6cdc5c47c9
+    name: reclicense-frontend-6cdc5c47c9
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-frontend
+      uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+    resourceVersion: "879025"
+    uid: 4138be99-e3dd-4c08-8198-46c58672e600
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+        pod-template-hash: 6cdc5c47c9
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T17:11:24+08:00"
+        labels:
+          app: reclicense-frontend
+          pod-template-hash: 6cdc5c47c9
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.1
+          imagePullPolicy: Never
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "6"
+    creationTimestamp: "2025-11-25T09:13:14Z"
+    generation: 14
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: 74cbf746f4
+    name: reclicense-frontend-74cbf746f4
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-frontend
+      uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+    resourceVersion: "992322"
+    uid: ce7caf83-ba5f-450e-a7c5-5e4338a72edb
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+        pod-template-hash: 74cbf746f4
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-11-25T17:11:24+08:00"
+        labels:
+          app: reclicense-frontend
+          pod-template-hash: 74cbf746f4
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.1
+          imagePullPolicy: Never
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          node-role.kubernetes.io/worker: ""
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 14
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "4"
+    creationTimestamp: "2025-11-25T09:09:47Z"
+    generation: 3
+    labels:
+      app: reclicense-frontend
+      pod-template-hash: fcbb4f45
+    name: reclicense-frontend-fcbb4f45
+    namespace: reclicense
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: reclicense-frontend
+      uid: 4c864a77-f12b-4aaf-bc23-90bccddfc49e
+    resourceVersion: "879111"
+    uid: 24c78c98-c0b4-4ca0-b029-0c12677b38ab
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: reclicense-frontend
+        pod-template-hash: fcbb4f45
+    template:
+      metadata:
+        labels:
+          app: reclicense-frontend
+          pod-template-hash: fcbb4f45
+      spec:
+        containers:
+        - env:
+          - name: REACT_APP_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_BASE_URL
+                name: reclicense-config
+          image: reclicense-frontend:v1.1
+          imagePullPolicy: Never
+          name: frontend
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"reclicense-backend-hpa","namespace":"reclicense"},"spec":{"behavior":{"scaleDown":{"policies":[{"periodSeconds":60,"type":"Percent","value":50}],"stabilizationWindowSeconds":300},"scaleUp":{"policies":[{"periodSeconds":15,"type":"Percent","value":100},{"periodSeconds":15,"type":"Pods","value":2}],"selectPolicy":"Max","stabilizationWindowSeconds":30}},"maxReplicas":6,"metrics":[{"resource":{"name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"Resource"},{"resource":{"name":"memory","target":{"averageUtilization":80,"type":"Utilization"}},"type":"Resource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"reclicense-backend"}}}
+    creationTimestamp: "2025-11-25T09:17:32Z"
+    name: reclicense-backend-hpa
+    namespace: reclicense
+    resourceVersion: "1157027"
+    uid: 6f7562eb-bee0-4037-bd8b-77ab37f2d6f3
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 60
+          type: Percent
+          value: 50
+        selectPolicy: Max
+        stabilizationWindowSeconds: 300
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        - periodSeconds: 15
+          type: Pods
+          value: 2
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 6
+    metrics:
+    - resource:
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: Resource
+    - resource:
+        name: memory
+        target:
+          averageUtilization: 80
+          type: Utilization
+      type: Resource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: reclicense-backend
+  status:
+    conditions:
+    - lastTransitionTime: "2025-11-25T09:18:02Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2025-11-26T01:53:45Z"
+      message: the HPA was able to successfully calculate a replica count from memory
+        resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2025-11-26T02:16:17Z"
+      message: the desired count is within the acceptable range
+      reason: DesiredWithinRange
+      status: "False"
+      type: ScalingLimited
+    currentMetrics:
+    - resource:
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: Resource
+    - resource:
+        current:
+          averageUtilization: 2
+          averageValue: 141344Ki
+        name: memory
+      type: Resource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2025-11-26T02:16:17Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"reclicense-frontend-hpa","namespace":"reclicense"},"spec":{"behavior":{"scaleDown":{"policies":[{"periodSeconds":60,"type":"Percent","value":50}],"stabilizationWindowSeconds":300},"scaleUp":{"policies":[{"periodSeconds":30,"type":"Percent","value":100},{"periodSeconds":30,"type":"Pods","value":2}],"selectPolicy":"Max","stabilizationWindowSeconds":60}},"maxReplicas":8,"metrics":[{"resource":{"name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"Resource"},{"resource":{"name":"memory","target":{"averageUtilization":80,"type":"Utilization"}},"type":"Resource"}],"minReplicas":2,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"reclicense-frontend"}}}
+    creationTimestamp: "2025-11-25T09:17:32Z"
+    name: reclicense-frontend-hpa
+    namespace: reclicense
+    resourceVersion: "1118334"
+    uid: 03f15c88-0b28-4df0-b0ea-bd69a43eda5e
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 60
+          type: Percent
+          value: 50
+        selectPolicy: Max
+        stabilizationWindowSeconds: 300
+      scaleUp:
+        policies:
+        - periodSeconds: 30
+          type: Percent
+          value: 100
+        - periodSeconds: 30
+          type: Pods
+          value: 2
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+    maxReplicas: 8
+    metrics:
+    - resource:
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: Resource
+    - resource:
+        name: memory
+        target:
+          averageUtilization: 80
+          type: Utilization
+      type: Resource
+    minReplicas: 2
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: reclicense-frontend
+  status:
+    conditions:
+    - lastTransitionTime: "2025-11-25T09:18:02Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2025-11-25T09:18:02Z"
+      message: the HPA was able to successfully calculate a replica count from memory
+        resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2025-11-25T09:23:02Z"
+      message: the desired replica count is less than the minimum replica count
+      reason: TooFewReplicas
+      status: "True"
+      type: ScalingLimited
+    currentMetrics:
+    - resource:
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: Resource
+    - resource:
+        current:
+          averageUtilization: 4
+          averageValue: 11266Ki
+        name: memory
+      type: Resource
+    currentReplicas: 2
+    desiredReplicas: 2
+    lastScaleTime: "2025-11-26T01:53:13Z"
+kind: List
+metadata:
+  resourceVersion: ""

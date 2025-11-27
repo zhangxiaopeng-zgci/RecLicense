@@ -30,7 +30,7 @@ def git_check(unzip_path):
 
     dependecy=depend_detection(unzip_path,unzip_path+"/temp.json")
 
-    confilct_copyleft_list,confilct_depend_dict=conflict_dection(licenses_in_files,dependecy)
+    confilct_copyleft_list,confilct_depend_dict,dep_incompatible=conflict_dection(licenses_in_files,dependecy)
     compatible_licenses, compatible_both_list, compatible_secondary_list, compatible_combine_list = license_compatibility_filter(licenses_in_files.values())
     
     lock.acquire()

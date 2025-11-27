@@ -26,14 +26,21 @@ DEFAULT_PLATFORMS = {
         'name': 'Gitee',
         'api_url': 'https://gitee.com/api/v5',
         'repo_api': 'https://gitee.com/api/v5/repos/{owner}/{repo}',
-        'zipball_url': 'https://gitee.com/{owner}/{repo}/repository/archive/master.zip',
+        'zipball_url': 'https://gitee.com/{owner}/{repo}/repository/archive/{branch}.zip',
         'auth_type': 'param',  # Token in query parameter
+        'token_param': 'access_token',
         'headers': {
             'Accept': 'application/json',
         },
         'env_token': 'GITEE_TOKEN',
         'enabled': True,
-        'public': True
+        'public': True,
+        'url_prefix': 'https://gitee.com/',
+        # Fetch default branch from API
+        'fetch_default_branch': True,
+        'default_branch_field': 'default_branch',
+        # Fallback branches if API fails
+        'branch_fallback': ['master', 'main', 'dev', 'develop']
     },
     'gitlab': {
         'name': 'GitLab',
