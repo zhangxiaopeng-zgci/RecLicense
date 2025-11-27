@@ -63,8 +63,9 @@ COPY ./backend /backend
 
 WORKDIR /backend
 
-# Create logging directory
+# Create logging and config directories
 RUN mkdir -p /backend/app/logging && touch /backend/app/logging/backend.log
+RUN mkdir -p /backend/config
 
 VOLUME [ "/backend/temp_files" ]
 

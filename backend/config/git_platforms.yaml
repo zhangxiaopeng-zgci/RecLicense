@@ -1,0 +1,24 @@
+platforms:
+  gitee-private:
+    name: "Gitee私有部署"
+    api_url: "https://z.gitee.cn/api/v5"
+    repo_api: "https://z.gitee.cn/api/v5/repos/{owner}/{repo}"
+    zipball_url: "https://z.gitee.cn/{owner}/{repo}/repository/archive/{branch}.zip"
+    # API uses param auth, download uses header auth
+    auth_type: "param"
+    token_param: "access_token"
+    # Override auth for download
+    download_auth_type: "header"
+    download_token_header: "Authorization"
+    download_token_prefix: "token "
+    headers:
+      Accept: "application/json"
+    env_token: "GITEE_PRIVATE_TOKEN"
+    enabled: true
+    public: false
+    url_prefix: "https://z.gitee.cn/"
+    # Fetch default branch from API
+    fetch_default_branch: true
+    default_branch_field: "default_branch"
+    # Fallback branches if API fails
+    branch_fallback: ["master", "main", "dev", "develop"]

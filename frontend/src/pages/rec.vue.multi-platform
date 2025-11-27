@@ -1,26 +1,26 @@
 <template>
   <div id="page">
-    <!-- <div class="steps">
-        <el-steps :active="step_active" align-center finish-status="success">
-          <el-step title="Compatibility Check"></el-step>
-          <el-step title="Preferences"></el-step>
-          <el-step title="Term Comparison"></el-step>
-        </el-steps>
-      </div> -->
+    <div class="steps">
+      <el-steps :active="step_active" align-center finish-status="success">
+        <el-step title="Compatibility Check"></el-step>
+        <el-step title="Preferences"></el-step>
+        <el-step title="Term Comparison"></el-step>
+      </el-steps>
+    </div>
 
     <div id="main1" class="main1" style="height: auto">
       <el-row :gutter="20" style="margin-top: 20px; height: 600px">
-        <el-col :span="24">
+        <el-col :span="16">
           <div class="file_box">
             <div>
-              <el-card style="height: 6%;">
+              <el-card style="height: 600px;">
                 <div slot="header" class="clearfix">
                   <span style="font-size: 20px;color:white">License Compatibility Check</span>
                 </div>
-                <div class="file-url" v-loading="loading"
-                  element-loading-text="It may take a while... A Project like Pytorch needs about 11 minutes to be resolved completely. Please be patient and do not close the page. ">
+                <div class="file-url" v-loading="loading" element-loading-text="Please be patient. It may take a while...">
                   <p style="font-size: 17px; font-weight:400;">You can upload your project or input Git repository
-                    url. </p>
+                    url. If you want to choose a license for a new project, you can just <b style="color:red">skip this
+                      step</b>.</p>
                   <el-upload class="avatar-uploader" id="uploader" ref="uploader" action="#" :show-file-list="true"
                     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-change="file_change"
                     :before-remove="remove_file" :limit=1 accept=".rar,.zip" drag :auto-upload="false"
@@ -28,32 +28,20 @@
 
                     <i class="el-icon-upload" style="color: #095da7"></i>
                     <div class="el-upload__text">Drag the file here, or <em>click to upload</em></div>
-                    <div class="el-upload__tip" slot="tip">Only <strong>zip/rar</strong> files can be uploaded. Ensure
-                      that there is a file named LICENSE in the root directory of your project.</div>
+                    <div class="el-upload__tip" slot="tip">Only <strong>zip/rar</strong> files can be uploaded</div>
                   </el-upload>
                   <el-divider></el-divider>
 
                   <div class="giturl">
-                    <el-select v-model="git_address.platform" :disabled="git_disabled" @change="git_change"
-                               placeholder="Select Platform" style="width: 220px; margin-right: 4px">
-                      <el-option v-for="p in git_platforms" :key="p.id"
-                                 :label="p.url_prefix"
-                                 :value="p.id">
-                        <span>{{ p.url_prefix }}</span>
-                      </el-option>
+                    <el-select v-model="git_address.platform" :disabled="git_disabled" @change="git_change" placeholder="Select Platform" style="width: 160px; margin-right: 8px">
+                      <el-option v-for="p in git_platforms" :key="p.id" :label="p.name" :value="p.id"></el-option>
                     </el-select>
+                    <span style="display: inline; font-size: 16px; margin-right: 6px">{{ platformPrefix }}</span>
                     <b-form-input v-model="git_address.username" :disabled="git_disabled" placeholder="owner"
                       @change="git_change" style="width: 180px; display: inline"></b-form-input>
-                    <span style="display: inline; font-size: 20px; margin: 0 4px">/</span>
+                    <span style="display: inline; font-size: 20px">/</span>
                     <b-form-input v-model="git_address.reponame" :disabled="git_disabled" placeholder="repository"
                       @change="git_change" style="width: 180px; display: inline"></b-form-input>
-                    <div style="margin-top: 8px;">
-                      <span style="color: #606266; font-size: 14px; margin-right: 8px">Full URL:</span>
-                      <b-form-input v-model="fullGitUrl" :disabled="git_disabled"
-                                    @input="parseFullUrl" @change="git_change"
-                                    placeholder="Or paste complete URL, e.g.: https://github.com/owner/repository.git"
-                                    style="width: 600px; display: inline-block"></b-form-input>
-                    </div>
                   </div>
                 </div>
                 <div class="description" id="description" style="display: none">
@@ -70,8 +58,9 @@
                       <el-table-column label="license">
                         <template slot-scope="scope">
                           <el-popover placement="bottom" width="400" trigger="hover">
-                            <span>{{ depend_dict[scope.row.path] || 'No conflicts' }}</span>
+                            <span>{{ depend_dict[scope.row.license] }}</span>
                             <span slot="reference">{{ scope.row.license }}</span>
+
                           </el-popover>
                         </template>
                       </el-table-column>
@@ -91,20 +80,52 @@
             </div>
           </div>
         </el-col>
+        <el-col :span="8">
+          <div class="list">
+            <el-card style="height: 600px">
+              <div slot="header" class="clearfix">
+                <span style="font-size: 20px;color:white">Recommendation List</span>
+              </div>
+              <div class="dropdown">
+                <el-select v-model="cur_option" placeholder="Please choose" @change="sort_license($event)">
+                  <el-option v-for="item in sort_options" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+
+              <!-- Reconmmend List -->
+              <el-table :data="table_data" style="overflow-y: scroll; height: 460px;" :row-class-name="tabel_row_class"
+                empty-text="No data">
+                <el-table-column label="Compatibility" width="110" align="center">
+                  <template slot-scope="scope">
+                    <div class="circle"></div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="name" label="Name" width="200"></el-table-column>
+              </el-table>
+
+            </el-card>
+          </div>
+        </el-col>
       </el-row>
+
 
       <el-row>
         <el-col :span="24">
           <el-progress :percentage="progress" :show-text="false" v-if="loading"></el-progress>
           <div style="margin-top: 20px; text-align: left; ">
             <div id="question-icons">
-              <i class="el-icon-error"></i><span>: There is a compatibility conflict between the licenses of this
-                project and
-                the file (or dependency).</span>
-              <i class="el-icon-success"></i><span>: There is no conflict. </span>
+              <i class="el-icon-error"></i><span>: There is a compatibility conflict between the licenses of files that
+                have a
+                dependent relationship.</span>
+              <i class="el-icon-success"></i><span>: There is no conflict as described above. </span>
               <i class="el-icon-warning"></i><span>: Do not support checking the compatibility of this license, please
                 check
                 manually.</span>
+              <i class="circle" style="border-color: #1230da"></i><span>: Both secondarily compatible and combinatively
+                compatible.</span>
+              <i class="circle" style="border-color: #28d811"></i><span>: Secondarily compatible.</span>
+              <i class="circle" style="border-color: #c7db11"></i><span>: Combinatively compatible.</span>
             </div>
             <div id="term-icons">
               <span class="icon-success"><i class="temp"></i></span><span>&nbsp&nbsp:The term is explicitly
@@ -120,43 +141,24 @@
       </el-row>
 
       <el-row :gutter="20" style="margin-top: 20px">
-        <el-col :span="24">
+        <el-col :span="18">
+
           <span id="upload-span"><b-button id="upload-button" variant="success" @click="upload_file_or_url">Start
               checking</b-button></span>
+          <span id="back-span"><b-button id="back-button" @click="back_upload">Previous Step</b-button></span>
+          <span id="question-span"><b-button id="question-button" @click="enter_questions(false)">Next
+              step</b-button></span>
+          <span id="skip-span"><b-button id="skip-button" @click="skip_upload">Skip this step</b-button></span>
           <span id="reupload-span"><b-button variant="success" @click="reupload">Reupload</b-button></span>
-
-          <!-- 新增：下载报告按钮（初始隐藏，分析完成后显示并启用） -->
-          <span id="download-span">
-            <b-button
-              id="download-button"
-              variant="primary"
-              :disabled="!report_ready"
-              @click="download_report"
-            >
-              Download report (JSON)
-            </b-button>
-          </span>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
           <div style="margin-top: 20px; background: azure; text-align: left;" id="copyleft-area">
-            <p>File License Incompatibilities and Project License Conflicts with Dependencies:</p>
-            <div v-for="conflict in check_res.confilct_copyleft_list" :key="conflict">
+            <p>Copyleft compatibility conflict:</p>
+            <div v-for="conflict in check_res.confilct_copyleft_list">
               <i class="el-icon-error" style="color: red"></i>
-              <span>{{ conflict }}</span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="24">
-          <div style="margin-top: 20px; background: azure; text-align: left;" id="remediation">
-            <p>Remediation suggestions for incompatible dependencies:</p>
-            <div v-for="conflict in check_res.remediation" :key="conflict">
-              <i class="el-icon-success" style="color: #28d811"></i>
               <span>{{ conflict }}</span>
             </div>
           </div>
@@ -165,6 +167,7 @@
 
     </div>
   </div>
+
 </template>
 
 <script>
@@ -183,6 +186,7 @@ export default {
       span_arr: [],
       support_list: [],
       step_active: 0,
+      // licenses: [["MIT"], [ "GPL-2.0-only", "LGPL-2.1-or-later", "BSL-1.0", "Apache-2.0", "GPL-2.0-or-later"], ["LicenseRef-scancode-wordnet", "LicenseRef-scancode-public-domain", "LicenseRef-scancode-other-permissive", "LicenseRef-scancode-mit-old-style"]],
       table_data: [
         { compatibility: 0, name: 'MIT', readability: 59.57333333, usage: 59986 },
         { compatibility: 0, name: 'Apache-2.0', readability: 481.73, usage: 14537 },
@@ -208,10 +212,17 @@ export default {
       static_table: [],
       cur_option: '',
       sort_options: [
-        { label: "Sort By Popularity", value: 0 },
-        { label: "Sort By Readability", value: 1 },
+        {
+          label: "Sort By Popularity",
+          value: 0
+        },
+        {
+          label: "Sort By Readability",
+          value: 1
+        },
       ],
       file: '',
+      loading: false,
       upload_disabled: false,
       git_disabled: false,
       git_platforms: [],
@@ -220,8 +231,6 @@ export default {
         username: '',
         reponame: ''
       },
-      fullGitUrl: '',
-      report_ready: false, // 新增：报告是否可下载
       check_res: {
         compatible_both_list: [],
         compatible_combine_list: [],
@@ -234,8 +243,7 @@ export default {
           dest_file: '',
           dest_license: ''
         }],
-        licenses_in_files: {},
-        remediation: []
+        licenses_in_files: {}
       }
     }
   },
@@ -250,8 +258,6 @@ export default {
     $("#term-icons").hide()
     $("#compare").hide()
     $("#copyleft-area").hide()
-    $("#remediation").hide()
-    $("#download-span").hide() // 新增：初始隐藏"下载报告"按钮
     this.static_table = this.table_data;
 
     // Load available Git platforms
@@ -267,7 +273,7 @@ export default {
       .catch(err => {
         console.error('Failed to load git platforms:', err);
         // Fallback to GitHub only
-        this.git_platforms = [{id: 'github', name: 'GitHub', url_prefix: 'https://github.com/', public: true}];
+        this.git_platforms = [{id: 'github', name: 'GitHub', public: true}];
       });
 
     this.axios.post('/api/support_list')
@@ -286,61 +292,18 @@ export default {
     // window.clearInterval(this.timer);
   },
 
-  watch: {
-    'git_address.platform': function() {
-      this.updateFullUrl();
-    },
-    'git_address.username': function() {
-      this.updateFullUrl();
-    },
-    'git_address.reponame': function() {
-      this.updateFullUrl();
+  computed: {
+    platformPrefix() {
+      const platformMap = {
+        'github': 'https://github.com/',
+        'gitee': 'https://gitee.com/',
+        'gitlab': 'https://gitlab.com/',
+      };
+      return platformMap[this.git_address.platform] || '';
     }
   },
 
   methods: {
-    updateFullUrl() {
-      if (this.git_address.username && this.git_address.reponame) {
-        const platform = this.git_platforms.find(p => p.id === this.git_address.platform);
-        const prefix = platform ? platform.url_prefix : 'https://github.com/';
-        this.fullGitUrl = `${prefix}${this.git_address.username}/${this.git_address.reponame}`;
-      }
-    },
-
-    parseFullUrl() {
-      if (!this.fullGitUrl || this.fullGitUrl.length < 10) return;
-
-      // 移除 .git 后缀
-      let url = this.fullGitUrl.trim().replace(/\.git$/, '');
-
-      // 尝试匹配各个平台
-      let matched = false;
-      for (let platform of this.git_platforms) {
-        const prefix = platform.url_prefix;
-        if (url.startsWith(prefix)) {
-          // 提取平台后的路径
-          const path = url.substring(prefix.length);
-          const parts = path.split('/').filter(p => p.length > 0);
-
-          if (parts.length >= 2) {
-            this.git_address.platform = platform.id;
-            // For repository groups: zgca/repo_group/demo
-            // owner = zgca (first part)
-            // repo = repo_group/demo (remaining parts joined)
-            this.git_address.username = parts[0];
-            this.git_address.reponame = parts.slice(1).join('/');
-            matched = true;
-            break;
-          }
-        }
-      }
-
-      // 如果URL看起来像Git URL但不匹配任何支持的平台，显示错误
-      if (!matched && (url.startsWith('http://') || url.startsWith('https://'))) {
-        this.$message.error('Unsupported Git platform. Please use GitHub, GitLab, Gitee, or configured private platforms.');
-      }
-    },
-
     // test() {
     //   var data = {testdata: 'test'}
     //   const config = {
@@ -355,6 +318,7 @@ export default {
     //     console.log(res);
     //   }) 
     // },
+
 
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
@@ -410,11 +374,14 @@ export default {
 
     // 对推荐列表进行排序
     sort_license(val) {
+      // 流行度
+      // console.log(val);
       if (val == 0) {
         this.table_data.sort((first, second) => {
           return second.usage - first.usage;
         })
       }
+      // 可读性
       if (val == 1) {
         this.table_data.sort((first, second) => {
           return second.readability - first.readability;
@@ -434,7 +401,7 @@ export default {
       if (this.upload_disabled == false && this.git_disabled == true) {
         data = new FormData()
         data.append('file', this.file);
-        url = '/api/zip_c'
+        url = '/api/zip'
         config.headers['Content-Type'] = 'multipart/form-data'
       } else if (this.upload_disabled == true && this.git_disabled == false) {
         data = {
@@ -442,7 +409,7 @@ export default {
           'username': this.git_address.username,
           'reponame': this.git_address.reponame,
         }
-        url = '/api/git_c'
+        url = '/api/git'
         config.headers['Content-Type'] = 'application/json';
       } else {
         this.$message.error('Please choose a file or input URL!')
@@ -456,15 +423,14 @@ export default {
           if (res.status == 200 && res.data != "URL ERROR") {
             var unzip_path = res.data;
             var timer = window.setInterval(() => {
-              if (this.progress < 50) this.progress += 8;
-              if (this.progress > 50 && this.progress < 80) this.progress += 5;
-              if (this.progress >= 80 && this.progress < 90) this.progress += 1;
+              if (this.progress < 50) this.progress += 8; // 每次增加8%
+              if (this.progress > 50 && this.progress<80) this.progress +=5; // 最多到90%，留10%给最终处理
+              if (this.progress >= 80 && this.progress< 90) this.progress +=1;
               if (this.progress >= 90) this.progress = 90;
-              config.headers['Content-Type'] = 'application/json'
               this.axios.post('/api/poll', { path: unzip_path }, config)
                 .then(res => {
                   if (res.data != 'doing') {
-                    this.progress = 100;
+                    this.progress = 100; // 完成时设为100%
                     window.clearInterval(timer);
                     this.check_res = res.data;
                     this.upload_done();
@@ -472,7 +438,7 @@ export default {
                 });
             }, 2000)
 
-          } else if (res.data == "URL ERROR") {
+          } else if (res.data == "URL ERROR") { // git url is wrong
             this.$message.error("Make sure the git url is correct!")
           }
           console.log(res);
@@ -480,11 +446,6 @@ export default {
     },
 
     upload_done() {
-      if (this.check_res.error) {
-        this.$message.error(this.check_res.error);
-        this.loading = false;
-        return;
-      }
       var temp_table = []
       for (const license of this.table_data) {
         if (this.has(this.check_res.compatible_licenses, license.name)) {
@@ -500,18 +461,9 @@ export default {
       $('#skip-span').hide()
       $('#question-span').show()
       $("#back-span").show()
-      $("#reupload-span").show()
       if (this.check_res.confilct_copyleft_list.length > 0) {
         $("#copyleft-area").show()
       }
-      if (this.check_res.remediation.length > 0) {
-        $("#remediation").show()
-      }
-
-      // 新增：分析完成 -> 启用并显示下载按钮
-      this.report_ready = true;
-      $("#download-span").show();
-
       this.loading = false;
     },
 
@@ -532,6 +484,18 @@ export default {
       } else {
         this.$message.error("Make sure there are no conflicts in files until you proceed to next step!")
       }
+
+      // console.log('enter');
+      // $(".file-url").hide()
+      // $("#description").hide()
+      // $("#skip-span").hide()
+      // console.log('tag1');
+      // $("#upload-span").hide()
+      // $("#question-span").hide()
+      // $("#questions").show()
+      // $("#back-span").show()
+
+      // this.step_active = 1
     },
 
     skip_upload() {
@@ -550,22 +514,14 @@ export default {
       $("#upload-span").show()
       $("#questions").hide()
       $("#copyleft-area").hide()
-      $("#remediation").hide()
-
-      // 新增：返回时禁用并隐藏下载按钮
-      this.report_ready = false;
-      $("#download-span").hide();
-
       this.table_data = this.static_table;
+      // this.check_res = {}
       this.check_res.confilct_copyleft_list = [],
-      this.check_res.compatible_both_list = [],
-      this.step_active = 0
+        this.check_res.compatible_both_list = [],
+        this.step_active = 0
     },
 
     reupload() {
-      // 新增：重新上传前，禁用并隐藏下载按钮
-      this.report_ready = false;
-      $("#download-span").hide();
       this.$router.go(0)
     },
 
@@ -606,14 +562,15 @@ export default {
 
     generate_depend_dict() {
       var temp_depend = {};
-      for (const file of Object.keys(this.check_res.licenses_in_files)) {
-        temp_depend[file] = ''
+      for (const license_in_file of Object.values(this.check_res.licenses_in_files)) {
+        for (const license of license_in_file) {
+          temp_depend[license] = ''
+        }
       }
-
       console.log(temp_depend);
       for (const license of this.check_res.confilct_depend_dict) {
-        temp_depend[license.src_file] += 'Incompatibile with ' + license.dest_file + ':' + license.dest_license + ';'
-        temp_depend[license.dest_file] += 'Incompatibile with ' + license.src_file + ':' + license.src_license + ';'
+        temp_depend[license.src_license] += 'Incompatibile with ' + license.dest_file + ':' + license.dest_license + ';'
+        temp_depend[license.dest_license] += 'Incompatibile with ' + license.src_file + ':' + license.src_license + ';'
       }
       console.log(temp_depend);
       this.depend_dict = temp_depend;
@@ -632,7 +589,7 @@ export default {
 
     licenses_row_class({ row, rowIndex }) {
       for (const pair of this.check_res.confilct_depend_dict) {
-        if (row.path == pair.dest_file || row.path == pair.src_file) {
+        if (row.license == pair.dest_license || row.license == pair.src_license) {
           return "conflict-license";
         }
       }
@@ -662,37 +619,6 @@ export default {
         return "combine-row"
       }
     },
-
-    // 新增：下载报告
-    download_report() {
-  try {
-    // 兼容老环境：不用 ??
-    const raw = (this.check_res !== undefined && this.check_res !== null) ? this.check_res : {};
-    const json = JSON.stringify(raw, null, 2);
-    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
-
-    const ts = new Date().toISOString().replace(/[:.]/g, '-');
-    let base = 'compat_report';
-
-    // 兼容老环境：不用 ?.
-    if (this.git_address && this.git_address.username && this.git_address.reponame) {
-      base = `${this.git_address.username}-${this.git_address.reponame}-compat_report`;
-    }
-    const filename = `${base}-${ts}.json`;
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error(e);
-    this.$message.error('Failed to download report.');
-  }
-},
 
 
   }
@@ -758,6 +684,9 @@ export default {
   background: #456BD9;
   border: 7px solid #0F1C3F;
   border-radius: 50%;
+  /* width: 15px; */
+  /* margin-left: 10px; */
+  /* font-family: element-icons!important; */
   font-style: normal;
   font-weight: 400;
   font-variant: normal;
@@ -832,6 +761,7 @@ export default {
 .icon-success>.temp,
 .icon-wrong>.temp {
   position: relative;
+  /* font-size: 1; */
   height: 20px;
   width: auto;
   margin-left: 15px;

@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: reclicense-mongo
+    command: mongod --bind_ip=0.0.0.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - reclicense
+
+  backend:
+    build:
+      context: .
+      dockerfile: deploy/backend.dockerfile
+    container_name: reclicense-backend
+    image: reclicense-backend:v1.8
+    env_file:
+      - .env
+    environment:
+      # MongoDB connection
+      RECLIC_MONGO_PORT: "mongodb:27017"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/temp_files:/backend/temp_files
+      - ./backend/config:/backend/config:ro
+    depends_on:
+      - mongodb
+    networks:
+      - reclicense
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/git_platforms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: deploy/frontend.dockerfile
+    container_name: reclicense-frontend
+    image: reclicense-frontend:v1.6
+    ports:
+      - "8080:80"
+    environment:
+      REACT_APP_BASE_URL: "http://localhost:5000"
+    depends_on:
+      - backend
+    networks:
+      - reclicense
+
+volumes:
+  mongodb-data:
+
+networks:
+  reclicense:
+    driver: bridge

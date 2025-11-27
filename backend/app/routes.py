@@ -9,7 +9,8 @@ from pathlib import Path
 import rarfile
 from .compatibility_check import *
 from .query import license_compatibility_judge
-from .download_github import download_git
+from .download_git_v2 import download_git
+from .git_platforms_config import get_config as get_git_config
 from .question import license_terms_choice
 from .compare import license_compare
 from .remediator import * 
@@ -134,8 +135,10 @@ def download():
     logging.info(f"user_ip: {ip}")
     username= request.json.get("username")
     reponame = request.json.get("reponame")
+    platform = request.json.get("platform", "github")  # Default to github for backward compatibility
+    logging.info(f"Downloading from {platform}: {username}/{reponame}")
     print(reponame)
-    file_path=download_git(username,reponame)
+    file_path=download_git(username, reponame, platform)
     if file_path == "URL ERROR":
         return "URL ERROR"
     unzip_path=file_path[:-4]
@@ -153,8 +156,10 @@ def download_c():
     logging.info(f"user_ip: {ip}")
     username= request.json.get("username")
     reponame = request.json.get("reponame")
+    platform = request.json.get("platform", "github")  # Default to github for backward compatibility
+    logging.info(f"Downloading from {platform}: {username}/{reponame}")
     print(reponame)
-    file_path=download_git(username,reponame)
+    file_path=download_git(username, reponame, platform)
     if file_path == "URL ERROR":
         return "URL ERROR"
     unzip_path=file_path[:-4]
@@ -181,6 +186,13 @@ def support_lst():
     df1 = pd.read_csv('./app/knowledgebase/compatibility_63.csv', index_col=0)
     license_list = df1.index.tolist()
     return license_list
+
+@app.route('/api/git_platforms', methods=['GET'])
+@app.route('/git_platforms', methods=['GET'])
+def git_platforms():
+    """Get list of available Git platforms"""
+    config = get_git_config()
+    return {'platforms': config.get_platform_list()}
 @app.route('/api/query', methods=['POST'])
 @app.route('/query', methods=['POST'])
 def query():

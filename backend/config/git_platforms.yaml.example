@@ -1,0 +1,79 @@
+# Git Platforms Configuration for RecLicense
+# This file allows you to configure custom Git platforms (public or private deployments)
+
+platforms:
+  # Example 1: Private GitLab deployment
+  gitlab-private:
+    name: "Company GitLab"           # Display name
+    api_url: "https://gitlab.company.com/api/v4"
+    repo_api: "https://gitlab.company.com/api/v4/projects/{owner}%2F{repo}"
+    zipball_url: "https://gitlab.company.com/api/v4/projects/{owner}%2F{repo}/repository/archive.zip"
+    auth_type: header                 # Options: bearer, header, param
+    token_header: "PRIVATE-TOKEN"     # Header name for token (when auth_type=header)
+    headers:
+      Accept: "application/json"
+    env_token: "GITLAB_PRIVATE_TOKEN" # Environment variable name for token
+    enabled: true
+    public: false                     # Is this a public platform?
+
+  # Example 2: Private Gitea deployment
+  gitea:
+    name: "Company Gitea"
+    api_url: "https://git.company.com/api/v1"
+    repo_api: "https://git.company.com/api/v1/repos/{owner}/{repo}"
+    zipball_url: "https://git.company.com/{owner}/{repo}/archive/master.zip"
+    auth_type: param                  # Token as query parameter
+    headers:
+      Accept: "application/json"
+    env_token: "GITEA_TOKEN"
+    enabled: true
+    public: false
+
+  # Example 3: Private Gogs deployment
+  gogs:
+    name: "Dev Gogs"
+    api_url: "https://gogs.dev.com/api/v1"
+    repo_api: "https://gogs.dev.com/api/v1/repos/{owner}/{repo}"
+    zipball_url: "https://gogs.dev.com/{owner}/{repo}/archive/master.zip"
+    auth_type: param
+    headers:
+      Accept: "application/json"
+    env_token: "GOGS_TOKEN"
+    enabled: true
+    public: false
+
+  # Example 4: GitHub Enterprise
+  github-enterprise:
+    name: "GitHub Enterprise"
+    api_url: "https://github.enterprise.com/api/v3"
+    repo_api: "https://github.enterprise.com/api/v3/repos/{owner}/{repo}"
+    zipball_api: "https://github.enterprise.com/api/v3/repos/{owner}/{repo}/zipball"
+    auth_type: bearer                 # Bearer token in Authorization header
+    headers:
+      Accept: "application/vnd.github+json"
+    env_token: "GITHUB_ENTERPRISE_TOKEN"
+    enabled: true
+    public: false
+
+  # Example 5: Disable built-in platform (override defaults)
+  # gitee:
+  #   enabled: false
+
+# Configuration Notes:
+#
+# 1. auth_type options:
+#    - bearer: Authorization: Bearer <token>
+#    - header: Custom-Header: <token> (specify header name in token_header)
+#    - param: Add token as query parameter ?access_token=<token>
+#
+# 2. URL templates use {owner} and {repo} placeholders
+#    Example: "https://git.example.com/api/v1/repos/{owner}/{repo}"
+#
+# 3. Must provide either zipball_api or zipball_url (or both)
+#
+# 4. env_token: Environment variable name to read token from
+#    Set in Kubernetes Secret or Docker environment
+#
+# 5. enabled: Set to false to disable a platform
+#
+# 6. public: Whether this is a public platform (affects UI display)

@@ -1,7 +1,7 @@
 :80 {
 	route {
 		handle_path /api/* {
-			reverse_proxy reclicense-backend:5000 {
+			reverse_proxy backend:5000 {
 				header_down +Access-Control-Allow-Origin "*"
 				header_down +Access-Control-Allow-Methods "OPTIONS, DELETE, GET, HEAD, POST, PUT"
 			}

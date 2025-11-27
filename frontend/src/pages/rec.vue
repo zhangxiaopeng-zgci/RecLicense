@@ -18,7 +18,7 @@
                   <span style="font-size: 20px;color:white">License Compatibility Check</span>
                 </div>
                 <div class="file-url" v-loading="loading" element-loading-text="Please be patient. It may take a while...">
-                  <p style="font-size: 17px; font-weight:400;">You can upload your project or input Github repository
+                  <p style="font-size: 17px; font-weight:400;">You can upload your project or input Git repository
                     url. If you want to choose a license for a new project, you can just <b style="color:red">skip this
                       step</b>.</p>
                   <el-upload class="avatar-uploader" id="uploader" ref="uploader" action="#" :show-file-list="true"
@@ -33,12 +33,26 @@
                   <el-divider></el-divider>
 
                   <div class="giturl">
-                    <span style="display: inline; font-size: 20px">https://github.com/</span>
-                    <b-form-input v-model="git_address.username" :disabled="git_disabled" placeholder="Username"
-                      @change="git_change" style="width: 200px; display: inline"></b-form-input>
-                    <span style="display: inline; font-size: 20px">/</span>
-                    <b-form-input v-model="git_address.reponame" :disabled="git_disabled" placeholder="Repository name"
-                      @change="git_change" style="width: 200px; display: inline"></b-form-input>
+                    <el-select v-model="git_address.platform" :disabled="git_disabled" @change="git_change"
+                               placeholder="Select Platform" style="width: 220px; margin-right: 4px">
+                      <el-option v-for="p in git_platforms" :key="p.id"
+                                 :label="p.url_prefix"
+                                 :value="p.id">
+                        <span>{{ p.url_prefix }}</span>
+                      </el-option>
+                    </el-select>
+                    <b-form-input v-model="git_address.username" :disabled="git_disabled" placeholder="owner"
+                      @change="git_change" style="width: 180px; display: inline"></b-form-input>
+                    <span style="display: inline; font-size: 20px; margin: 0 4px">/</span>
+                    <b-form-input v-model="git_address.reponame" :disabled="git_disabled" placeholder="repository"
+                      @change="git_change" style="width: 180px; display: inline"></b-form-input>
+                    <div style="margin-top: 8px;">
+                      <span style="color: #606266; font-size: 14px; margin-right: 8px">Full URL:</span>
+                      <b-form-input v-model="fullGitUrl" :disabled="git_disabled"
+                                    @input="parseFullUrl" @change="git_change"
+                                    placeholder="Or paste complete URL, e.g.: https://github.com/owner/repository.git"
+                                    style="width: 600px; display: inline-block"></b-form-input>
+                    </div>
                   </div>
                 </div>
                 <div class="description" id="description" style="display: none">
@@ -222,10 +236,13 @@ export default {
       loading: false,
       upload_disabled: false,
       git_disabled: false,
+      git_platforms: [],
       git_address: {
+        platform: 'github',
         username: '',
         reponame: ''
       },
+      fullGitUrl: '',
       check_res: {
         compatible_both_list: [],
         compatible_combine_list: [],
@@ -254,6 +271,23 @@ export default {
     $("#compare").hide()
     $("#copyleft-area").hide()
     this.static_table = this.table_data;
+
+    // Load available Git platforms
+    this.axios.get('/api/git_platforms')
+      .then(res => {
+        if (res.data && res.data.platforms) {
+          this.git_platforms = res.data.platforms;
+          if (this.git_platforms.length > 0) {
+            this.git_address.platform = this.git_platforms[0].id;
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load git platforms:', err);
+        // Fallback to GitHub only
+        this.git_platforms = [{id: 'github', name: 'GitHub', url_prefix: 'https://github.com/', public: true}];
+      });
+
     this.axios.post('/api/support_list')
       .then(res => {
         this.support_list = res.data;
@@ -270,7 +304,60 @@ export default {
     // window.clearInterval(this.timer);
   },
 
+  watch: {
+    'git_address.platform': function() {
+      this.updateFullUrl();
+    },
+    'git_address.username': function() {
+      this.updateFullUrl();
+    },
+    'git_address.reponame': function() {
+      this.updateFullUrl();
+    }
+  },
+
   methods: {
+    updateFullUrl() {
+      if (this.git_address.username && this.git_address.reponame) {
+        const platform = this.git_platforms.find(p => p.id === this.git_address.platform);
+        const prefix = platform ? platform.url_prefix : 'https://github.com/';
+        this.fullGitUrl = `${prefix}${this.git_address.username}/${this.git_address.reponame}`;
+      }
+    },
+
+    parseFullUrl() {
+      if (!this.fullGitUrl || this.fullGitUrl.length < 10) return;
+
+      // 移除 .git 后缀
+      let url = this.fullGitUrl.trim().replace(/\.git$/, '');
+
+      // 尝试匹配各个平台
+      let matched = false;
+      for (let platform of this.git_platforms) {
+        const prefix = platform.url_prefix;
+        if (url.startsWith(prefix)) {
+          // 提取平台后的路径
+          const path = url.substring(prefix.length);
+          const parts = path.split('/').filter(p => p.length > 0);
+
+          if (parts.length >= 2) {
+            this.git_address.platform = platform.id;
+            // For repository groups: zgca/repo_group/demo
+            // owner = zgca (first part)
+            // repo = repo_group/demo (remaining parts joined)
+            this.git_address.username = parts[0];
+            this.git_address.reponame = parts.slice(1).join('/');
+            matched = true;
+            break;
+          }
+        }
+      }
+
+      // 如果URL看起来像Git URL但不匹配任何支持的平台，显示错误
+      if (!matched && (url.startsWith('http://') || url.startsWith('https://'))) {
+        this.$message.error('Unsupported Git platform. Please use GitHub, GitLab, Gitee, or configured private platforms.');
+      }
+    },
     // test() {
     //   var data = {testdata: 'test'}
     //   const config = {
@@ -372,6 +459,7 @@ export default {
         config.headers['Content-Type'] = 'multipart/form-data'
       } else if (this.upload_disabled == true && this.git_disabled == false) {
         data = {
+          'platform': this.git_address.platform,
           'username': this.git_address.username,
           'reponame': this.git_address.reponame,
         }
